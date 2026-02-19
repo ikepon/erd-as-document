@@ -1,0 +1,14 @@
+{
+  "projects": [
+    {
+      "name": "my-project",
+      "schemaPath": "/path/to/rails-app/db/schema.rb",
+      "filter": {
+        "exclude": {
+          "tables": ["ar_internal_metadata", "schema_migrations"],
+          "patterns": []
+        }
+      }
+    }
+  ]
+}

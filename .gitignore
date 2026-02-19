@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Storage (local working data)
+public/storage/*
+!public/storage/config.json.example
+!public/storage/.gitkeep
+
+# Build output
+dist/
+
+# Nuxt
+.output
+.data
+.nuxt
+.nitro
+.cache
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+.fleet
+.idea
+
+# Local env files
+.env
+.env.*
+!.env.example

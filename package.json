@@ -1,0 +1,41 @@
+{
+  "name": "erd-as-document",
+  "version": "1.0.0",
+  "description": "schema.rb から ER 図を生成するツール",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "parse-schema": "tsx scripts/parse-schema.ts",
+    "watch-states": "tsx scripts/watch-states.ts",
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fives-inc/erd-as-document.git"
+  },
+  "keywords": [
+    "erd",
+    "schema",
+    "rails"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fives-inc/erd-as-document/issues"
+  },
+  "homepage": "https://github.com/fives-inc/erd-as-document#readme",
+  "dependencies": {
+    "chokidar": "^5.0.0",
+    "nuxt": "^4.2.2",
+    "vue": "^3.5.27",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.9",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
