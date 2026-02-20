@@ -10,9 +10,8 @@ export default defineNuxtConfig({
       { code: 'ja', name: '日本語', file: 'ja.json' },
       { code: 'en', name: 'English', file: 'en.json' },
     ],
-    defaultLocale: 'ja',
     lazy: true,
     langDir: 'locales',
-    strategy: 'no_prefix',
+    defaultLocale: 'en',
   },
 })

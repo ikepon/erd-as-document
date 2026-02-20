@@ -10,15 +10,15 @@
     "overwrite": "上書き保存"
   },
   "welcome": {
-    "title": "Rails の <code>schema.rb</code> から ER 図を生成します",
+    "title": "Rails の schema.rb から ER 図を生成します",
     "step1Title": "設定ファイルを作成",
     "step1Code": "cp public/storage/config.json.example public/storage/config.json",
-    "step2Title": "<code>config.json</code> の <code>schemaPath</code> を編集",
+    "step2Title": "config.json の schemaPath を編集",
     "step2Code": "\"schemaPath\": \"/path/to/rails-app/db/schema.rb\"",
-    "step3Title": "<code>npm run dev</code> を再起動すると ER JSON が自動生成されます"
+    "step3Title": "npm run dev を再起動すると ER JSON が自動生成されます"
   },
   "emptyState": {
-    "text": "ヘッダーからプロジェクトを選択して<br>ER図を表示しましょう"
+    "text": "ヘッダーからプロジェクトを選択してER図を表示しましょう"
   },
   "sidebar": {
     "hide": "パネルを隠す",

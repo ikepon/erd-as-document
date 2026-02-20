@@ -10,15 +10,15 @@
     "overwrite": "Overwrite"
   },
   "welcome": {
-    "title": "Generate ER Diagram from Rails <code>schema.rb</code>",
+    "title": "Generate ER Diagram from Rails schema.rb",
     "step1Title": "Create config file",
     "step1Code": "cp public/storage/config.json.example public/storage/config.json",
-    "step2Title": "Edit <code>schemaPath</code> in <code>config.json</code>",
+    "step2Title": "Edit schemaPath in config.json",
     "step2Code": "\"schemaPath\": \"/path/to/rails-app/db/schema.rb\"",
-    "step3Title": "Restart <code>npm run dev</code> to auto-generate ER JSON"
+    "step3Title": "Restart npm run dev to auto-generate ER JSON"
   },
   "emptyState": {
-    "text": "Select a project from the header<br>to display the ER diagram"
+    "text": "Select a project from the header to display the ER diagram"
   },
   "sidebar": {
     "hide": "Hide Panel",

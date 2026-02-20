@@ -399,7 +399,7 @@ onMounted(() => {
           <line x1="35" y1="22" x2="24" y2="28" stroke="#a0aec0" stroke-width="1.5" stroke-dasharray="3 2" />
         </svg>
       </div>
-      <p class="empty-state-text" v-html="$t('welcome.title')"></p>
+      <p class="empty-state-text">{{ $t('welcome.title') }}</p>
       <div class="setup-steps">
         <div class="setup-step">
           <span class="setup-step-number">1</span>
@@ -411,13 +411,13 @@ onMounted(() => {
         <div class="setup-step">
           <span class="setup-step-number">2</span>
           <div class="setup-step-content">
-            <p class="setup-step-title" v-html="$t('welcome.step2Title')"></p>
+            <p class="setup-step-title">{{ $t('welcome.step2Title') }}</p>
           </div>
         </div>
         <div class="setup-step">
           <span class="setup-step-number">3</span>
           <div class="setup-step-content">
-            <p class="setup-step-title" v-html="$t('welcome.step3Title')"></p>
+            <p class="setup-step-title">{{ $t('welcome.step3Title') }}</p>
           </div>
         </div>
       </div>
@@ -433,7 +433,7 @@ onMounted(() => {
           <line x1="34" y1="22" x2="24" y2="28" stroke="#a0aec0" stroke-width="1.5" stroke-dasharray="3 2" />
         </svg>
       </div>
-      <p class="empty-state-text" v-html="$t('emptyState.text')"></p>
+      <p class="empty-state-text">{{ $t('emptyState.text') }}</p>
     </section>
 
     <section v-if="schema" class="schema-view">
