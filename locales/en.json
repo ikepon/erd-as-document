@@ -1,0 +1,51 @@
+{
+  "header": {
+    "projectNone": "No Projects",
+    "projectSelect": "Select Project",
+    "tableCount": "({selected}/{total} Tables)",
+    "erDiagramNone": "No Saved Diagrams",
+    "erDiagramSelect": "Select ER Diagram",
+    "reload": "Reload selected ER diagram",
+    "save": "Save",
+    "overwrite": "Overwrite"
+  },
+  "welcome": {
+    "title": "Generate ER Diagram from Rails <code>schema.rb</code>",
+    "step1Title": "Create config file",
+    "step1Code": "cp public/storage/config.json.example public/storage/config.json",
+    "step2Title": "Edit <code>schemaPath</code> in <code>config.json</code>",
+    "step2Code": "\"schemaPath\": \"/path/to/rails-app/db/schema.rb\"",
+    "step3Title": "Restart <code>npm run dev</code> to auto-generate ER JSON"
+  },
+  "emptyState": {
+    "text": "Select a project from the header<br>to display the ER diagram"
+  },
+  "sidebar": {
+    "hide": "Hide Panel",
+    "show": "Show Panel"
+  },
+  "tableSelector": {
+    "displayOptions": "Display Options",
+    "showRelations": "Show Relations",
+    "searchPlaceholder": "Search tables (e.g. usrord)",
+    "tableCount": "Tables ({selected}/{total})",
+    "selectAll": "Select All",
+    "deselectAll": "Deselect All",
+    "selectedOnly": "Selected Only",
+    "noResults": "No matching tables",
+    "noSelected": "No selected tables"
+  },
+  "canvas": {
+    "resetPositions": "Reset Positions",
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out"
+  },
+  "message": {
+    "fileNotFound": "File not found",
+    "loadFailed": "Failed to load",
+    "saveFailed": "Failed to save",
+    "saved": "Saved successfully",
+    "savePrompt": "Enter a name for the ER diagram",
+    "mermaidCopied": "Copied to clipboard in Mermaid format"
+  }
+}

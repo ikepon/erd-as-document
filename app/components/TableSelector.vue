@@ -23,6 +23,8 @@ type Emits = {
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
+const { t } = useI18n()
+
 // スクロールコンテナの参照
 const scrollContainerRef = ref<HTMLElement | null>(null)
 
@@ -161,14 +163,14 @@ const toggleHighlight = (tableName: string, event: MouseEvent) => {
 <template>
   <div class="table-selector">
     <div class="display-options">
-      <h3>表示オプション</h3>
+      <h3>{{ $t('tableSelector.displayOptions') }}</h3>
       <label class="option-item">
         <input
           type="checkbox"
           :checked="showRelations"
           @change="toggleRelations"
         >
-        関連を表示
+        {{ $t('tableSelector.showRelations') }}
       </label>
     </div>
 
@@ -177,26 +179,26 @@ const toggleHighlight = (tableName: string, event: MouseEvent) => {
         <input
           v-model="searchQuery"
           type="text"
-          placeholder="テーブル検索（例: usrord）"
+          :placeholder="$t('tableSelector.searchPlaceholder')"
           class="search-input"
         >
       </div>
       <div class="table-list-header">
-        <h3>テーブル ({{ visibleSelectedCount }}/{{ visibleTables.length }})</h3>
+        <h3>{{ $t('tableSelector.tableCount', { selected: visibleSelectedCount, total: visibleTables.length }) }}</h3>
         <div class="bulk-actions">
-          <button type="button" @click="selectAll">全選択</button>
-          <button type="button" @click="deselectAll">全解除</button>
+          <button type="button" @click="selectAll">{{ $t('tableSelector.selectAll') }}</button>
+          <button type="button" @click="deselectAll">{{ $t('tableSelector.deselectAll') }}</button>
           <button
             type="button"
             :class="{ active: showSelectedOnly }"
             @click="showSelectedOnly = !showSelectedOnly"
           >
-            選択中のみ
+            {{ $t('tableSelector.selectedOnly') }}
           </button>
         </div>
       </div>
       <div v-if="filteredTables.length === 0" class="no-results">
-        {{ showSelectedOnly ? '選択中のテーブルがありません' : '一致するテーブルがありません' }}
+        {{ showSelectedOnly ? $t('tableSelector.noSelected') : $t('tableSelector.noResults') }}
       </div>
       <div ref="scrollContainerRef" class="table-list-scroll">
         <ul class="table-list">

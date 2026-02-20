@@ -1,0 +1,51 @@
+{
+  "header": {
+    "projectNone": "プロジェクトなし",
+    "projectSelect": "プロジェクト選択",
+    "tableCount": "({selected}/{total} テーブル)",
+    "erDiagramNone": "保存されたER図なし",
+    "erDiagramSelect": "ER図を選択",
+    "reload": "選択中のER図を再読み込み",
+    "save": "保存",
+    "overwrite": "上書き保存"
+  },
+  "welcome": {
+    "title": "Rails の <code>schema.rb</code> から ER 図を生成します",
+    "step1Title": "設定ファイルを作成",
+    "step1Code": "cp public/storage/config.json.example public/storage/config.json",
+    "step2Title": "<code>config.json</code> の <code>schemaPath</code> を編集",
+    "step2Code": "\"schemaPath\": \"/path/to/rails-app/db/schema.rb\"",
+    "step3Title": "<code>npm run dev</code> を再起動すると ER JSON が自動生成されます"
+  },
+  "emptyState": {
+    "text": "ヘッダーからプロジェクトを選択して<br>ER図を表示しましょう"
+  },
+  "sidebar": {
+    "hide": "パネルを隠す",
+    "show": "パネルを表示"
+  },
+  "tableSelector": {
+    "displayOptions": "表示オプション",
+    "showRelations": "関連を表示",
+    "searchPlaceholder": "テーブル検索（例: usrord）",
+    "tableCount": "テーブル ({selected}/{total})",
+    "selectAll": "全選択",
+    "deselectAll": "全解除",
+    "selectedOnly": "選択中のみ",
+    "noResults": "一致するテーブルがありません",
+    "noSelected": "選択中のテーブルがありません"
+  },
+  "canvas": {
+    "resetPositions": "位置をリセット",
+    "zoomIn": "拡大",
+    "zoomOut": "縮小"
+  },
+  "message": {
+    "fileNotFound": "ファイルが見つかりません",
+    "loadFailed": "読み込みに失敗しました",
+    "saveFailed": "保存に失敗しました",
+    "saved": "保存しました",
+    "savePrompt": "ER図の名前を入力してください",
+    "mermaidCopied": "Mermaid 形式でクリップボードにコピーしました"
+  }
+}

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { ERSchema, ProjectConfig, Table } from '~/types/er-schema'
 
+const { t } = useI18n()
+
 // フィルタを適用してテーブルを絞り込む
 const filterTables = (tables: Table[], config: ProjectConfig | null): Table[] => {
   if (!config?.filter?.exclude) return tables
@@ -126,7 +128,7 @@ const loadSchema = async (projectName: string) => {
   try {
     const response = await fetch(`/storage/${projectName}/er.json`)
     if (!response.ok) {
-      throw new Error('ファイルが見つかりません')
+      throw new Error(t('message.fileNotFound'))
     }
     schema.value = await response.json()
     selectedProject.value = projectName
@@ -142,7 +144,7 @@ const loadSchema = async (projectName: string) => {
     // 状態一覧を取得
     await loadStatesList(projectName)
   } catch (e) {
-    error.value = e instanceof Error ? e.message : '読み込みに失敗しました'
+    error.value = e instanceof Error ? e.message : t('message.loadFailed')
     schema.value = null
   }
 }
@@ -226,7 +228,7 @@ const saveState = async (name: string) => {
     })
 
     if (!response.ok) {
-      throw new Error('保存に失敗しました')
+      throw new Error(t('message.saveFailed'))
     }
 
     const result = await response.json()
@@ -235,18 +237,18 @@ const saveState = async (name: string) => {
     error.value = null
 
     // 保存完了メッセージを表示
-    saveMessage.value = '保存しました'
+    saveMessage.value = t('message.saved')
     setTimeout(() => {
       saveMessage.value = null
     }, 1000)
   } catch (e) {
-    error.value = e instanceof Error ? e.message : '保存に失敗しました'
+    error.value = e instanceof Error ? e.message : t('message.saveFailed')
   }
 }
 
 // 新規保存（名前入力ダイアログ）
 const saveAsNew = async () => {
-  const name = prompt('ER図の名前を入力してください')
+  const name = prompt(t('message.savePrompt'))
   if (!name) return
   await saveState(name)
 }
@@ -298,7 +300,7 @@ const exportAsMermaid = async () => {
   try {
     await navigator.clipboard.writeText(mermaidText)
     // 簡易的な通知（後で改善可能）
-    alert('Mermaid 形式でクリップボードにコピーしました')
+    alert(t('message.mermaidCopied'))
   } catch {
     // フォールバック: テキストエリアを使用
     const textarea = document.createElement('textarea')
@@ -307,7 +309,7 @@ const exportAsMermaid = async () => {
     textarea.select()
     document.execCommand('copy')
     document.body.removeChild(textarea)
-    alert('Mermaid 形式でクリップボードにコピーしました')
+    alert(t('message.mermaidCopied'))
   }
 }
 
@@ -331,7 +333,7 @@ onMounted(() => {
             @change="($event.target as HTMLSelectElement).value && loadSchema(($event.target as HTMLSelectElement).value)"
           >
             <option value="" disabled>
-              {{ projects.length === 0 ? 'プロジェクトなし' : 'プロジェクト選択' }}
+              {{ projects.length === 0 ? $t('header.projectNone') : $t('header.projectSelect') }}
             </option>
             <option v-for="project in projects" :key="project" :value="project">
               {{ project }}
@@ -339,7 +341,7 @@ onMounted(() => {
           </select>
         </div>
         <span v-if="schema" class="table-count">
-          ({{ selectedTables.size }}/{{ visibleTablesCount }} テーブル)
+          {{ $t('header.tableCount', { selected: selectedTables.size, total: visibleTablesCount }) }}
         </span>
         <select
           v-if="schema"
@@ -349,7 +351,7 @@ onMounted(() => {
           @change="($event.target as HTMLSelectElement).value && selectState(($event.target as HTMLSelectElement).value)"
         >
           <option value="" disabled>
-            {{ states.length === 0 ? '保存されたER図なし' : 'ER図を選択' }}
+            {{ states.length === 0 ? $t('header.erDiagramNone') : $t('header.erDiagramSelect') }}
           </option>
           <option v-for="state in states" :key="state" :value="state">
             {{ state }}
@@ -358,21 +360,21 @@ onMounted(() => {
         <button
           v-if="schema && selectedState"
           class="reload-btn"
-          title="選択中のER図を再読み込み"
+          :title="$t('header.reload')"
           @click="selectState(selectedState!)"
         >
           ↻
         </button>
         <div v-if="schema" class="schema-actions">
           <button class="action-btn save-btn" @click="saveAsNew">
-            保存
+            {{ $t('header.save') }}
           </button>
           <button
             v-if="selectedState"
             class="action-btn overwrite-btn"
             @click="saveOverwrite"
           >
-            上書き保存
+            {{ $t('header.overwrite') }}
           </button>
           <div class="export-group">
             <button class="action-btn" @click="exportAsSvg">SVG</button>
@@ -397,27 +399,25 @@ onMounted(() => {
           <line x1="35" y1="22" x2="24" y2="28" stroke="#a0aec0" stroke-width="1.5" stroke-dasharray="3 2" />
         </svg>
       </div>
-      <p class="empty-state-text">
-        Rails の <code>schema.rb</code> から ER 図を生成します
-      </p>
+      <p class="empty-state-text" v-html="$t('welcome.title')"></p>
       <div class="setup-steps">
         <div class="setup-step">
           <span class="setup-step-number">1</span>
           <div class="setup-step-content">
-            <p class="setup-step-title">設定ファイルを作成</p>
-            <pre><code>cp public/storage/config.json.example public/storage/config.json</code></pre>
+            <p class="setup-step-title">{{ $t('welcome.step1Title') }}</p>
+            <pre><code>{{ $t('welcome.step1Code') }}</code></pre>
           </div>
         </div>
         <div class="setup-step">
           <span class="setup-step-number">2</span>
           <div class="setup-step-content">
-            <p class="setup-step-title"><code>config.json</code> の <code>schemaPath</code> を編集</p>
+            <p class="setup-step-title" v-html="$t('welcome.step2Title')"></p>
           </div>
         </div>
         <div class="setup-step">
           <span class="setup-step-number">3</span>
           <div class="setup-step-content">
-            <p class="setup-step-title"><code>npm run dev</code> を再起動すると ER JSON が自動生成されます</p>
+            <p class="setup-step-title" v-html="$t('welcome.step3Title')"></p>
           </div>
         </div>
       </div>
@@ -433,14 +433,14 @@ onMounted(() => {
           <line x1="34" y1="22" x2="24" y2="28" stroke="#a0aec0" stroke-width="1.5" stroke-dasharray="3 2" />
         </svg>
       </div>
-      <p class="empty-state-text">ヘッダーからプロジェクトを選択して<br>ER図を表示しましょう</p>
+      <p class="empty-state-text" v-html="$t('emptyState.text')"></p>
     </section>
 
     <section v-if="schema" class="schema-view">
       <button
         class="toggle-sidebar-btn"
         :class="{ 'panel-hidden': !showSidebar }"
-        :title="showSidebar ? 'パネルを隠す' : 'パネルを表示'"
+        :title="showSidebar ? $t('sidebar.hide') : $t('sidebar.show')"
         @click="showSidebar = !showSidebar"
       >
         {{ showSidebar ? '◀' : '▶' }}
