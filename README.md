@@ -189,7 +189,41 @@ Reload the browser after changing settings.
 
 ---
 
-### 7. About Auto-regeneration
+### 7. Custom Foreign Key Relationships
+
+For non-standard foreign key columns that don't follow Rails naming conventions (e.g., `send_user_id` → `users`), you can explicitly define relationships in `config.json`.
+
+```json
+// public/storage/config.json
+{
+  "projects": [
+    {
+      "name": "my-project",
+      "schemaPath": "/path/to/schema.rb",
+      "relationships": {
+        "messages": {
+          "send_user_id": "users",
+          "receiver_user_id": "users"
+        },
+        "payments": {
+          "payer_company_id": "companies",
+          "payee_company_id": "companies"
+        }
+      }
+    }
+  ]
+}
+```
+
+**Priority order:**
+1. Use `relationships` definition if exists (highest priority)
+2. Fall back to automatic inference if no definition (`user_id` → `users`, etc.)
+
+Restart `npm run dev` after changing settings.
+
+---
+
+### 8. About Auto-regeneration
 
 While `npm run dev` is running, changes to `schema.rb` are detected and `er.json` is automatically regenerated.
 
