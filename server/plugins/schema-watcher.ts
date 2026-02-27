@@ -31,6 +31,11 @@ type ProjectEntry = {
       patterns?: string[]
     }
   }
+  relationships?: {
+    [tableName: string]: {
+      [columnName: string]: string
+    }
+  }
 }
 
 type StorageConfig = {
