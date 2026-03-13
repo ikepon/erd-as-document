@@ -31,6 +31,11 @@ type ProjectEntry = {
       patterns?: string[]
     }
   }
+  relationships?: {
+    [tableName: string]: {
+      [columnName: string]: string
+    }
+  }
 }
 
 type StorageConfig = {
@@ -103,30 +108,50 @@ function pluralize(word: string): string {
   return word + 's'
 }
 
-function extractRelations(columns: Column[]): Relation[] {
+function extractRelations(
+  columns: Column[],
+  tableName: string,
+  customRelationships?: { [columnName: string]: string }
+): Relation[] {
   const relations: Relation[] = []
 
   for (const column of columns) {
     if (column.name.endsWith('_id')) {
-      const singular = column.name.slice(0, -3)
-      const tableName = pluralize(singular)
-      relations.push({
-        to: tableName,
-        column: column.name,
-      })
+      // Check if custom relationship is defined for this column
+      const targetTable = customRelationships?.[column.name]
+
+      if (targetTable) {
+        // Use custom relationship
+        relations.push({
+          to: targetTable,
+          column: column.name,
+        })
+      } else {
+        // Fall back to automatic inference
+        const singular = column.name.slice(0, -3)
+        const inferredTable = pluralize(singular)
+        relations.push({
+          to: inferredTable,
+          column: column.name,
+        })
+      }
     }
   }
 
   return relations
 }
 
-function parseSchemaFile(schemaPath: string): ERSchema {
+function parseSchemaFile(
+  schemaPath: string,
+  customRelationships?: { [tableName: string]: { [columnName: string]: string } }
+): ERSchema {
   const content = readFileSync(schemaPath, 'utf-8')
   const rawTables = parseCreateTables(content)
 
   const tables: Table[] = rawTables.map((rawTable) => {
     const columns = parseColumns(rawTable.body)
-    const relations = extractRelations(columns)
+    const tableRelationships = customRelationships?.[rawTable.name]
+    const relations = extractRelations(columns, rawTable.name, tableRelationships)
     return {
       name: rawTable.name,
       columns,
@@ -173,14 +198,19 @@ function ensureProjectDir(storageDir: string, projectName: string): void {
   }
 }
 
-function regenerateErJson(projectName: string, schemaPath: string, storageDir: string): void {
+function regenerateErJson(
+  projectName: string,
+  schemaPath: string,
+  storageDir: string,
+  customRelationships?: { [tableName: string]: { [columnName: string]: string } }
+): void {
   try {
     if (!existsSync(schemaPath)) {
       console.log(`[schema-watcher] Schema file not found: ${schemaPath}`)
       return
     }
 
-    const schema = parseSchemaFile(schemaPath)
+    const schema = parseSchemaFile(schemaPath, customRelationships)
     const outputPath = join(storageDir, projectName, 'er.json')
     writeFileSync(outputPath, JSON.stringify(schema, null, 2))
     console.log(`[schema-watcher] Generated: ${outputPath}`)
@@ -220,6 +250,7 @@ export default defineNitroPlugin(() => {
 
   // 監視対象を収集
   const watchTargets: Map<string, string> = new Map() // schemaPath -> projectName
+  const projectConfigs: Map<string, ProjectEntry> = new Map() // schemaPath -> project config
   const projectNames: string[] = []
 
   for (const project of config.projects) {
@@ -242,10 +273,11 @@ export default defineNitroPlugin(() => {
     const erJsonPath = join(storageDir, project.name, 'er.json')
     if (!existsSync(erJsonPath)) {
       console.log(`[schema-watcher] Initial generation for: ${project.name}`)
-      regenerateErJson(project.name, project.schemaPath, storageDir)
+      regenerateErJson(project.name, project.schemaPath, storageDir, project.relationships)
     }
 
     watchTargets.set(project.schemaPath, project.name)
+    projectConfigs.set(project.schemaPath, project)
     console.log(`[schema-watcher] Watching: ${project.schemaPath} -> ${project.name}`)
   }
 
@@ -265,9 +297,10 @@ export default defineNitroPlugin(() => {
 
   watcher.on('change', (filePath) => {
     const projectName = watchTargets.get(filePath)
-    if (projectName) {
+    const projectConfig = projectConfigs.get(filePath)
+    if (projectName && projectConfig) {
       console.log(`[schema-watcher] Detected change: ${filePath}`)
-      regenerateErJson(projectName, filePath, storageDir)
+      regenerateErJson(projectName, filePath, storageDir, projectConfig.relationships)
     }
   })
 

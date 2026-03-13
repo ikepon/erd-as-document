@@ -191,7 +191,41 @@ UI 上で以下を操作できます。
 
 ---
 
-### 7. ER JSON の自動再生成について
+### 7. 非標準的な外部キーの関連設定
+
+Rails の命名規則と異なる外部キーカラム（例: `send_user_id` → `users`）がある場合、`config.json` の `relationships` で明示的に指定できます。
+
+```json
+// public/storage/config.json
+{
+  "projects": [
+    {
+      "name": "my-project",
+      "schemaPath": "/path/to/schema.rb",
+      "relationships": {
+        "messages": {
+          "send_user_id": "users",
+          "receiver_user_id": "users"
+        },
+        "payments": {
+          "payer_company_id": "companies",
+          "payee_company_id": "companies"
+        }
+      }
+    }
+  ]
+}
+```
+
+**動作の優先順位:**
+1. `relationships` に定義があればそれを使用（最優先）
+2. 設定がない場合は自動推測（`user_id` → `users` など）
+
+設定変更後は `npm run dev` を再起動してください。
+
+---
+
+### 8. ER JSON の自動再生成について
 
 `npm run dev` 起動中、`schema.rb` の変更を検知すると自動で `er.json` が再生成されます。
 

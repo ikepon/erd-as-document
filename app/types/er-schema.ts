@@ -25,4 +25,9 @@ export type ProjectConfig = {
       patterns?: string[]
     }
   }
+  relationships?: {
+    [tableName: string]: {
+      [columnName: string]: string
+    }
+  }
 }
