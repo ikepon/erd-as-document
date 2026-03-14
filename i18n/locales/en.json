@@ -7,7 +7,12 @@
     "erDiagramSelect": "Select ER Diagram",
     "reload": "Reload selected ER diagram",
     "save": "Save",
-    "overwrite": "Overwrite"
+    "overwrite": "Overwrite",
+    "favoriteProjectAdd": "Set as favorite (will be auto-loaded on startup)",
+    "favoriteProjectRemove": "Remove from favorites",
+    "favoriteStateAdd": "Set as favorite (will be auto-loaded when this project opens)",
+    "favoriteStateRemove": "Remove from favorites",
+    "favoriteBadge": "★ Default"
   },
   "welcome": {
     "title": "Generate ER Diagram from Rails schema.rb",
@@ -46,6 +51,10 @@
     "saveFailed": "Failed to save",
     "saved": "Saved successfully",
     "savePrompt": "Enter a name for the ER diagram",
-    "mermaidCopied": "Copied to clipboard in Mermaid format"
+    "mermaidCopied": "Copied to clipboard in Mermaid format",
+    "favoriteProjectSet": "Default project set to \"{name}\"",
+    "favoriteProjectRemoved": "Default project setting removed",
+    "favoriteStateSet": "Default state set to \"{name}\"",
+    "favoriteStateRemoved": "Default state setting removed"
   }
 }
