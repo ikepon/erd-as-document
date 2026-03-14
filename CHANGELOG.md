@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-03-14
+
 ### Added
 - Custom foreign key relationship mapping feature
   - Define non-standard FK column mappings in `config.json` (e.g., `send_user_id` → `users`)
