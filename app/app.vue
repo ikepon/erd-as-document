@@ -313,8 +313,18 @@ const exportAsMermaid = async () => {
   }
 }
 
-onMounted(() => {
-  loadProjects()
+onMounted(async () => {
+  await loadProjects()
+
+  // プロジェクトがあれば最初のものを自動選択
+  if (projects.value.length > 0) {
+    await loadSchema(projects.value[0])
+
+    // 状態があれば最初のものを自動選択
+    if (states.value.length > 0) {
+      await selectState(states.value[0])
+    }
+  }
 })
 </script>
 
