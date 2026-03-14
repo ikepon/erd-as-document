@@ -43,6 +43,68 @@ const erdCanvasRef = ref<InstanceType<typeof ErdCanvas> | null>(null)
 // 保存メッセージ
 const saveMessage = ref<string | null>(null)
 
+// お気に入り機能
+type Favorites = {
+  project: string | null
+  states: Record<string, string> // projectName -> stateName
+}
+
+const FAVORITES_KEY = 'erd-favorites'
+
+const loadFavorites = (): Favorites => {
+  if (typeof window === 'undefined') return { project: null, states: {} }
+  const stored = localStorage.getItem(FAVORITES_KEY)
+  if (!stored) return { project: null, states: {} }
+  try {
+    return JSON.parse(stored)
+  } catch {
+    return { project: null, states: {} }
+  }
+}
+
+const saveFavorites = (favorites: Favorites) => {
+  if (typeof window === 'undefined') return
+  localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites))
+}
+
+const favorites = ref<Favorites>(loadFavorites())
+
+const toggleFavoriteProject = (projectName: string) => {
+  if (favorites.value.project === projectName) {
+    favorites.value.project = null
+    saveMessage.value = t('message.favoriteProjectRemoved', { name: projectName })
+  } else {
+    favorites.value.project = projectName
+    saveMessage.value = t('message.favoriteProjectSet', { name: projectName })
+  }
+  saveFavorites(favorites.value)
+  setTimeout(() => {
+    saveMessage.value = null
+  }, 2000)
+}
+
+const toggleFavoriteState = (projectName: string, stateName: string) => {
+  if (favorites.value.states[projectName] === stateName) {
+    delete favorites.value.states[projectName]
+    saveMessage.value = t('message.favoriteStateRemoved', { name: stateName })
+  } else {
+    favorites.value.states[projectName] = stateName
+    saveMessage.value = t('message.favoriteStateSet', { name: stateName })
+  }
+  saveFavorites(favorites.value)
+  setTimeout(() => {
+    saveMessage.value = null
+  }, 2000)
+}
+
+const isFavoriteProject = (projectName: string): boolean => {
+  return favorites.value.project === projectName
+}
+
+const isFavoriteState = (projectName: string, stateName: string): boolean => {
+  return favorites.value.states[projectName] === stateName
+}
+
 // フィルタ適用後のテーブル数
 const visibleTablesCount = computed(() => {
   if (!schema.value) return 0
@@ -313,8 +375,28 @@ const exportAsMermaid = async () => {
   }
 }
 
-onMounted(() => {
-  loadProjects()
+onMounted(async () => {
+  await loadProjects()
+
+  if (projects.value.length === 0) return
+
+  // お気に入りプロジェクトがあればそれを、なければ最初のプロジェクトを選択
+  const favoriteProject = favorites.value.project
+  const projectToLoad = favoriteProject && projects.value.includes(favoriteProject)
+    ? favoriteProject
+    : projects.value[0]
+
+  await loadSchema(projectToLoad)
+
+  if (states.value.length === 0) return
+
+  // お気に入り状態があればそれを、なければ最初の状態を選択
+  const favoriteState = favorites.value.states[projectToLoad]
+  const stateToLoad = favoriteState && states.value.includes(favoriteState)
+    ? favoriteState
+    : states.value[0]
+
+  await selectState(stateToLoad)
 })
 </script>
 
@@ -336,9 +418,18 @@ onMounted(() => {
               {{ projects.length === 0 ? $t('header.projectNone') : $t('header.projectSelect') }}
             </option>
             <option v-for="project in projects" :key="project" :value="project">
-              {{ project }}
+              {{ project }}{{ isFavoriteProject(project) ? ' ⭐' : '' }}
             </option>
           </select>
+          <button
+            v-if="selectedProject"
+            class="favorite-btn"
+            :class="{ active: isFavoriteProject(selectedProject) }"
+            :title="isFavoriteProject(selectedProject) ? $t('header.favoriteProjectRemove') : $t('header.favoriteProjectAdd')"
+            @click="toggleFavoriteProject(selectedProject)"
+          >
+            {{ isFavoriteProject(selectedProject) ? '★' : '☆' }}
+          </button>
         </div>
         <span v-if="schema" class="table-count">
           {{ $t('header.tableCount', { selected: selectedTables.size, total: visibleTablesCount }) }}
@@ -354,9 +445,18 @@ onMounted(() => {
             {{ states.length === 0 ? $t('header.erDiagramNone') : $t('header.erDiagramSelect') }}
           </option>
           <option v-for="state in states" :key="state" :value="state">
-            {{ state }}
+            {{ state }}{{ selectedProject && isFavoriteState(selectedProject, state) ? ' ⭐' : '' }}
           </option>
         </select>
+        <button
+          v-if="schema && selectedState && selectedProject"
+          class="favorite-btn"
+          :class="{ active: isFavoriteState(selectedProject, selectedState) }"
+          :title="isFavoriteState(selectedProject, selectedState) ? $t('header.favoriteStateRemove') : $t('header.favoriteStateAdd')"
+          @click="toggleFavoriteState(selectedProject, selectedState)"
+        >
+          {{ isFavoriteState(selectedProject, selectedState) ? '★' : '☆' }}
+        </button>
         <button
           v-if="schema && selectedState"
           class="reload-btn"
@@ -491,6 +591,7 @@ onMounted(() => {
   align-items: center;
   gap: 0.5rem;
   margin-top: 0.75rem;
+  flex-wrap: wrap;
 }
 
 .app-header-sub .schema-actions {
@@ -520,6 +621,12 @@ h2 {
   color: #1a1a2e;
 }
 
+.project-selector {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .project-selector select {
   padding: 6px 28px 6px 12px;
   border: 1px solid rgba(102, 126, 234, 0.3);
@@ -535,6 +642,9 @@ h2 {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23667eea' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 8px center;
+  min-width: 150px;
+  width: 150px;
+  flex-shrink: 1;
 }
 
 .project-selector select:hover {
@@ -757,7 +867,8 @@ h2 {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23667eea' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 8px center;
-  min-width: 140px;
+  min-width: 180px;
+  width: 180px;
 }
 
 .state-selector:hover:not(:disabled) {
@@ -804,6 +915,38 @@ h2 {
   background: rgba(102, 126, 234, 0.1);
   border-color: rgba(102, 126, 234, 0.5);
   box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+}
+
+.favorite-btn {
+  margin-left: 0;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ccc;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.favorite-btn:hover {
+  background: rgba(255, 215, 0, 0.1);
+  border-color: rgba(255, 215, 0, 0.5);
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.15);
+}
+
+.favorite-btn.active {
+  color: #ffd700;
+  border-color: rgba(255, 215, 0, 0.5);
+  background: rgba(255, 215, 0, 0.1);
 }
 
 .export-group {

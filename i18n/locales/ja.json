@@ -7,7 +7,12 @@
     "erDiagramSelect": "ER図を選択",
     "reload": "選択中のER図を再読み込み",
     "save": "保存",
-    "overwrite": "上書き保存"
+    "overwrite": "上書き保存",
+    "favoriteProjectAdd": "お気に入りに設定（初期表示に設定されます）",
+    "favoriteProjectRemove": "お気に入りを解除",
+    "favoriteStateAdd": "お気に入りに設定（このプロジェクトの初期表示に設定されます）",
+    "favoriteStateRemove": "お気に入りを解除",
+    "favoriteBadge": "★ 初期表示"
   },
   "welcome": {
     "title": "Rails の schema.rb から ER 図を生成します",
@@ -46,6 +51,10 @@
     "saveFailed": "保存に失敗しました",
     "saved": "保存しました",
     "savePrompt": "ER図の名前を入力してください",
-    "mermaidCopied": "Mermaid 形式でクリップボードにコピーしました"
+    "mermaidCopied": "Mermaid 形式でクリップボードにコピーしました",
+    "favoriteProjectSet": "初期表示を「{name}」に設定しました",
+    "favoriteProjectRemoved": "初期表示の設定を解除しました",
+    "favoriteStateSet": "初期表示を「{name}」に設定しました",
+    "favoriteStateRemoved": "初期表示の設定を解除しました"
   }
 }
