@@ -160,7 +160,27 @@ State files can be shared between projects that reference the same `schema.rb`. 
 
 ---
 
-### 6. Filter Display Tables
+### 6. Favorite Projects and States
+
+You can set favorites for projects and ER diagram states to streamline your workflow.
+
+**Features:**
+- **Auto-select on startup**: Favorited project and state are automatically loaded when you open the app
+- **Quick access**: Click the ★/☆ button next to the project/state selector to toggle favorites
+- **Visual feedback**: Toast notifications confirm when favorites are set or removed
+- **One favorite per type**: Only one project and one state (per project) can be favorited at a time
+
+**How to use:**
+1. Select a project from the dropdown
+2. Click the ☆ button next to the selector to set it as favorite (it turns to ★)
+3. The next time you open the app, this project will be auto-selected
+4. Same applies to saved ER diagram states
+
+Favorites are stored in your browser's localStorage, so they persist across sessions.
+
+---
+
+### 7. Filter Display Tables
 
 You can hide specific tables by setting `filter` in `public/storage/config.json`.
 
@@ -189,7 +209,7 @@ Reload the browser after changing settings.
 
 ---
 
-### 7. Custom Foreign Key Relationships
+### 8. Custom Foreign Key Relationships
 
 For non-standard foreign key columns that don't follow Rails naming conventions (e.g., `send_user_id` → `users`), you can explicitly define relationships in `config.json`.
 
@@ -223,7 +243,7 @@ Restart `npm run dev` after changing settings.
 
 ---
 
-### 8. About Auto-regeneration
+### 9. About Auto-regeneration
 
 While `npm run dev` is running, changes to `schema.rb` are detected and `er.json` is automatically regenerated.
 
