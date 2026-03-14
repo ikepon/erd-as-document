@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-03-14
+
+### Added
+- Auto-select first project and state on initial load
+- Favorite feature for projects and states
+  - Store favorites in localStorage
+  - Toggle favorites with ★/☆ buttons
+  - Toast notifications when favorites change
+  - Auto-load favorited items on startup
+  - Only one favorite per type (new replaces old)
+
 ## [1.1.0] - 2026-03-14
 
 ### Added
